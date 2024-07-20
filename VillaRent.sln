@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent_VillaAPI", "VillaRent_VillaAPI\VillaRent_VillaAPI.csproj", "{63618E05-7B1E-4091-B31D-590C394C5E8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent_Web", "VillaRent_Web\VillaRent_Web.csproj", "{C58E10C9-FF40-464B-8CA8-95332670F897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent_Utility", "VillaRent_Utility\VillaRent_Utility.csproj", "{17393E8E-9F54-4976-926D-97551801B789}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63618E05-7B1E-4091-B31D-590C394C5E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63618E05-7B1E-4091-B31D-590C394C5E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63618E05-7B1E-4091-B31D-590C394C5E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63618E05-7B1E-4091-B31D-590C394C5E8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C58E10C9-FF40-464B-8CA8-95332670F897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C58E10C9-FF40-464B-8CA8-95332670F897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C58E10C9-FF40-464B-8CA8-95332670F897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C58E10C9-FF40-464B-8CA8-95332670F897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17393E8E-9F54-4976-926D-97551801B789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17393E8E-9F54-4976-926D-97551801B789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17393E8E-9F54-4976-926D-97551801B789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17393E8E-9F54-4976-926D-97551801B789}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

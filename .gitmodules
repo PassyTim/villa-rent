@@ -1,0 +1,3 @@
+[submodule "VillaRent_VillaAPI"]
+	path = VillaRent_VillaAPI
+	url = https://github.com/PassyTim/villa-API.git
