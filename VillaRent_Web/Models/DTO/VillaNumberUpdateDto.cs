@@ -7,5 +7,4 @@ public record VillaNumberUpdateDto(
     int VillaNo,
     [Required]
     int VillaId,
-    [Required]
-    string Details);
+    string? Details);

@@ -7,4 +7,4 @@ public record VillaNumberCreateDto(
     int VillaNo,
     [Required]
     int VillaId,
-    string Details);
+    string? Details);

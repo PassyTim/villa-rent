@@ -1,5 +1,5 @@
 using AutoMapper;
-using VillaRent_VillaAPI.Models.DTO;
+using VillaRent_Web.Models.DTO;
 
 namespace VillaRent_Web;
 

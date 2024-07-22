@@ -5,10 +5,10 @@ namespace VillaRent_Web.Models.DTO;
 public record VillaUpdateDto(
     [Required] int Id,
     [Required] [MaxLength(50)] string Name,
-    string Details,
+    string? Details,
     [Required] double Rate,
-    [Required] string ImageUrl,
-    string Amenity,
-    [Required] int Occupancy,
-    [Required] int Sqft
+    string? ImageUrl,
+    string? Amenity,
+    int Occupancy,
+    int Sqft
 );

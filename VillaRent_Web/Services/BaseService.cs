@@ -9,19 +9,19 @@ namespace VillaRent_Web.Services;
 public class BaseService : IBaseService
 {
     public APIResponse responseModel { get; set; }
-    private IHttpClientFactory httpClient { get; }
+    private IHttpClientFactory HttpClient { get; }
 
     protected BaseService(IHttpClientFactory httpClient)
     {
         responseModel = new APIResponse();
-        this.httpClient = httpClient;
+        this.HttpClient = httpClient;
     }
     
     public async Task<T> SendAsync<T>(APIRequest apiRequest)
     {
         try
         {
-            var client = httpClient.CreateClient("RentAPI");
+            var client = HttpClient.CreateClient("RentAPI");
             HttpRequestMessage message = new HttpRequestMessage();
             message.Headers.Add("Accept", "application/json");
             message.RequestUri = new Uri(apiRequest.Url);
@@ -40,8 +40,7 @@ public class BaseService : IBaseService
                 _ => HttpMethod.Get
             };
 
-            HttpResponseMessage apiResponse = null;
-            apiResponse = await client.SendAsync(message);
+            HttpResponseMessage apiResponse = await client.SendAsync(message);
 
             var apiContent = await apiResponse.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<T>(apiContent)!;
