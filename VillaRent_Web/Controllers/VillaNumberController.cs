@@ -39,13 +39,13 @@ public class VillaNumberController : Controller
 
     public async Task<IActionResult> CreateVillaNumber()
     {
-        VillaNumberCreateVM viewModel = new();
+        VillaNumberCreateViewModel viewModel = new();
         var response = await _villaService.GetAllAsync<APIResponse?>();
         
         if (response is not null && response.IsSuccess)
         {
             viewModel.Villas = JsonConvert.DeserializeObject<List<VillaDto>>
-                (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                (Convert.ToString(response.Result)!)!.Select(i => new SelectListItem
             {
                 Text = i.Name,
                 Value = i.Id.ToString()
@@ -57,15 +57,35 @@ public class VillaNumberController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateVM viewModel)
+    public async Task<IActionResult> CreateVillaNumber(VillaNumberCreateViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
             var response = await _villaNumberService.CreateAsync<APIResponse?>(viewModel.VillaNumber);
             if (response is not null && response.IsSuccess)
             {
+                TempData["success"] = "VillaNumber created successfully!";
                 return RedirectToAction(nameof(IndexVillaNumber));
             }
+            else
+            {
+                TempData["error"] = "An error occured!";
+                if (response.Errors.Count > 0)
+                    ModelState.TryAddModelError("Errors", response.Errors.FirstOrDefault()!);
+            }
+        }
+        
+        TempData["error"] = "An error occured!";
+        var secondResponse = await _villaService.GetAllAsync<APIResponse?>();
+        
+        if (secondResponse is not null && secondResponse.IsSuccess)
+        {
+            viewModel.Villas = JsonConvert.DeserializeObject<List<VillaDto>>
+                (Convert.ToString(secondResponse.Result)!)!.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
         }
 
         return View(viewModel);
@@ -73,11 +93,28 @@ public class VillaNumberController : Controller
 
     public async Task<IActionResult> UpdateVillaNumber(int villaNo)
     {
-        var response = await _villaNumberService.GetAsync<APIResponse?>(villaNo);
-        if (response is not null && response.IsSuccess)
+        var firstResponse = await _villaNumberService.GetAsync<APIResponse?>(villaNo);
+        VillaNumberUpdateViewModel viewModel = new();
+        
+        if (firstResponse is not null && firstResponse.IsSuccess)
         {
-            VillaNumberDto model = JsonConvert.DeserializeObject<VillaNumberDto>(Convert.ToString(response.Result)!)!;
-            return View(_mapper.Map<VillaNumberUpdateDto>(model));
+            VillaNumberDto model = JsonConvert.DeserializeObject<VillaNumberDto>(Convert.ToString(firstResponse.Result)!)!;
+
+            viewModel.VillaNumber = _mapper.Map<VillaNumberUpdateDto>(model);
+        }
+        
+        var secondResponse = await _villaService.GetAllAsync<APIResponse?>();
+        
+        if (secondResponse is not null && secondResponse.IsSuccess)
+        {
+            viewModel.Villas = JsonConvert.DeserializeObject<List<VillaDto>>
+                (Convert.ToString(secondResponse.Result)!)!.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+            
+            return View(viewModel);
         }
         
         return NotFound();
@@ -85,39 +122,83 @@ public class VillaNumberController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateDto updateDto)
+    public async Task<IActionResult> UpdateVillaNumber(VillaNumberUpdateViewModel updateViewModel)
     {
-        var response = await _villaNumberService.UpdateAsync<APIResponse?>(updateDto);
+        var response = await _villaNumberService.UpdateAsync<APIResponse?>(updateViewModel.VillaNumber);
         if (response is not null && response.IsSuccess)
         {
+            TempData["success"] = "VillaNumber updated successfully!";
             return RedirectToAction(nameof(IndexVillaNumber));
         }
+        
+        TempData["error"] = "An error occured!";
+        var secondResponse = await _villaService.GetAllAsync<APIResponse?>();
+        
+        if (secondResponse is not null && secondResponse.IsSuccess)
+        {
+            updateViewModel.Villas = JsonConvert.DeserializeObject<List<VillaDto>>
+                (Convert.ToString(secondResponse.Result)!)!.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+        }
 
-        return View(updateDto);
+        return View(updateViewModel);
     }
     
     public async Task<IActionResult> DeleteVillaNumber(int villaNo)
     {
-        var response = await _villaNumberService.GetAsync<APIResponse?>(villaNo);
-        if (response is not null && response.IsSuccess)
+        var firstResponse = await _villaNumberService.GetAsync<APIResponse?>(villaNo);
+        VillaNumberDeleteViewModel viewModel = new();
+        
+        if (firstResponse is not null && firstResponse.IsSuccess)
         {
-            VillaNumberDto model = JsonConvert.DeserializeObject<VillaNumberDto>(Convert.ToString(response.Result)!)!;
-            return View(model);
+            VillaNumberDto model = JsonConvert.DeserializeObject<VillaNumberDto>(Convert.ToString(firstResponse.Result)!)!;
+            viewModel.VillaNumber = model;
         }
 
+        var secondResponse = await _villaService.GetAllAsync<APIResponse?>();
+        
+        if (secondResponse is not null && secondResponse.IsSuccess)
+        {
+            viewModel.Villas = JsonConvert.DeserializeObject<List<VillaDto>>
+                (Convert.ToString(secondResponse.Result)!)!.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+            
+            return View(viewModel);
+        }
+        
         return NotFound();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteVillaNumber(VillaNumberDto model)
+    public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteViewModel deleteViewModel)
     {
-        var response = await _villaNumberService.DeleteAsync<APIResponse?>(model.VillaNo);
+        var response = await _villaNumberService.DeleteAsync<APIResponse?>(deleteViewModel.VillaNumber.VillaNo);
         if (response is not null && response.IsSuccess)
         {
+            TempData["success"] = "VillaNumber deleted successfully!";
             return RedirectToAction(nameof(IndexVillaNumber));
         }
-
-        return View(model);
+        
+        TempData["error"] = "An error occured!";
+        var secondResponse = await _villaService.GetAllAsync<APIResponse?>();
+        
+        if (secondResponse is not null && secondResponse.IsSuccess)
+        {
+            deleteViewModel.Villas = JsonConvert.DeserializeObject<List<VillaDto>>
+                (Convert.ToString(secondResponse.Result)!)!.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+        }
+        
+        return View(deleteViewModel);
     }
 }

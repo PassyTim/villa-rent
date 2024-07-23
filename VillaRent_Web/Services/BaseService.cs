@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using VillaRent_Utility;
@@ -22,17 +23,17 @@ public class BaseService : IBaseService
         try
         {
             var client = HttpClient.CreateClient("RentAPI");
-            HttpRequestMessage message = new HttpRequestMessage();
-            message.Headers.Add("Accept", "application/json");
-            message.RequestUri = new Uri(apiRequest.Url);
+            HttpRequestMessage requestMessage = new HttpRequestMessage();
+            requestMessage.Headers.Add("Accept", "application/json");
+            requestMessage.RequestUri = new Uri(apiRequest.Url);
 
             if (apiRequest.Data is not null)
             {
-                message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
+                requestMessage.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
                     Encoding.UTF8, "application/json");
             }
 
-            message.Method = apiRequest.ApiType switch
+            requestMessage.Method = apiRequest.ApiType switch
             {
                 StaticDetails.ApiType.POST => HttpMethod.Post,
                 StaticDetails.ApiType.PUT => HttpMethod.Put,
@@ -40,21 +41,39 @@ public class BaseService : IBaseService
                 _ => HttpMethod.Get
             };
 
-            HttpResponseMessage apiResponse = await client.SendAsync(message);
+            HttpResponseMessage httpResponseMessage = await client.SendAsync(requestMessage);
 
-            var apiContent = await apiResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<T>(apiContent)!;
-            return response; 
+            var apiResponseContentAsString = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            try
+            {
+                APIResponse response = JsonConvert.DeserializeObject<APIResponse>(apiResponseContentAsString)!;
+                if (httpResponseMessage.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+                {
+                    response.IsSuccess = false;
+                    var outgoingResponseAsString = JsonConvert.SerializeObject(response);
+                    var outgoingResponse = JsonConvert.DeserializeObject<T>(outgoingResponseAsString);
+                    return outgoingResponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                var exceptionOutgoingResponse = JsonConvert.DeserializeObject<T>(apiResponseContentAsString)!;
+                return exceptionOutgoingResponse; 
+            }
+            
+            var defaultOutgoingResponse = JsonConvert.DeserializeObject<T>(apiResponseContentAsString)!;
+            return defaultOutgoingResponse;
         }
         catch (Exception ex)
         {
-            var dto = new APIResponse
+            var exceptionApiResponse = new APIResponse
             {
                 Errors = [ex.ToString()],
                 IsSuccess = false
             };
-            var res = JsonConvert.SerializeObject(dto);
-            var response = JsonConvert.DeserializeObject<T>(res)!;
+            var exceptionApiResponseAsString = JsonConvert.SerializeObject(exceptionApiResponse);
+            var response = JsonConvert.DeserializeObject<T>(exceptionApiResponseAsString)!;
             return response;
         }
     }
