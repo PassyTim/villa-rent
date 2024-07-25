@@ -10,4 +10,6 @@ public static class StaticDetails
         DELETE,
         PATCH
     }
+
+    public static readonly string SessionToken = "JWTToken";
 }
