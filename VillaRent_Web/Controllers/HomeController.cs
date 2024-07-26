@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using VillaRent_Utility;
 using VillaRent_Web.Models;
 using VillaRent_Web.Models.DTO;
 using VillaRent_Web.Services.IServices;
@@ -21,7 +22,9 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         List<VillaDto> list = new(); 
-        var response = await _villaService.GetAllAsync<APIResponse?>();
+        string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+        
+        var response = await _villaService.GetAllAsync<APIResponse?>(token);
 
         if (response is not null && response.IsSuccess)
         {

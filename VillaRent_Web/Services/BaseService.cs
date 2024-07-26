@@ -1,5 +1,7 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using VillaRent_Utility;
 using VillaRent_Web.Models;
@@ -41,6 +43,12 @@ public class BaseService : IBaseService
                 _ => HttpMethod.Get
             };
 
+            if (!apiRequest.Token.IsNullOrEmpty())
+            {
+                client.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+            }
+            
             HttpResponseMessage httpResponseMessage = await client.SendAsync(requestMessage);
 
             var apiResponseContentAsString = await httpResponseMessage.Content.ReadAsStringAsync();

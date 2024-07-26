@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VillaRent_Utility;
@@ -31,6 +33,17 @@ public class AuthController : Controller
         {
             LoginResponseDto loginModel =
                 JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(loginApiResponse.Result)!)!;
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaims(new Claim?[]
+            {
+                new(ClaimTypes.Name, loginModel.User.Username),
+                new(ClaimTypes.Role, loginModel.User.Role)
+            });
+
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            
             HttpContext.Session.SetString(StaticDetails.SessionToken, loginModel.Token);
             
             return RedirectToAction("Index", "Home");

@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using VillaRent_Utility;
 using VillaRent_Web.Models;
 using VillaRent_Web.Models.DTO;
 using VillaRent_Web.Services.IServices;
@@ -21,7 +23,9 @@ public class VillaController : Controller
     public async Task<IActionResult> IndexVilla()
     {
         List<VillaDto> list = new(); 
-        var response = await _villaService.GetAllAsync<APIResponse?>();
+        string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+        
+        var response = await _villaService.GetAllAsync<APIResponse?>(token);
 
         if (response is not null && response.IsSuccess)
         {
@@ -31,18 +35,21 @@ public class VillaController : Controller
         return View(list);
     }
 
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> CreateVilla()
     {
         return View();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateVilla(VillaCreateDto createDto)
     {
         if (ModelState.IsValid)
         {
-            var response = await _villaService.CreateAsync<APIResponse?>(createDto);
+            string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+            var response = await _villaService.CreateAsync<APIResponse?>(createDto, token);
             if (response is not null && response.IsSuccess)
             {
                 TempData["success"] = "Villa created successfully!";
@@ -53,9 +60,11 @@ public class VillaController : Controller
         return View(createDto);
     }
     
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> UpdateVilla(int villaId)
     {
-        var response = await _villaService.GetAsync<APIResponse?>(villaId);
+        string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+        var response = await _villaService.GetAsync<APIResponse?>(villaId, token);
         if (response is not null && response.IsSuccess)
         {
             VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.Result)!)!;
@@ -65,13 +74,15 @@ public class VillaController : Controller
         return NotFound();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateVilla(VillaUpdateDto updateDto)
     {
         if (ModelState.IsValid)
         {
-            var response = await _villaService.UpdateAsync<APIResponse?>(updateDto);
+            string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+            var response = await _villaService.UpdateAsync<APIResponse?>(updateDto, token);
             if (response is not null && response.IsSuccess)
             {
                 TempData["success"] = "Villa updated successfully!";
@@ -82,9 +93,11 @@ public class VillaController : Controller
         return View(updateDto);
     }
     
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteVilla(int villaId)
     {
-        var response = await _villaService.GetAsync<APIResponse?>(villaId);
+        string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+        var response = await _villaService.GetAsync<APIResponse?>(villaId, token);
         if (response is not null && response.IsSuccess)
         {
             VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.Result)!)!;
@@ -94,11 +107,13 @@ public class VillaController : Controller
         return NotFound();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteVilla(VillaDto model)
     {
-        var response = await _villaService.DeleteAsync<APIResponse?>(model.Id);
+        string? token = HttpContext.Session.GetString(StaticDetails.SessionToken);
+        var response = await _villaService.DeleteAsync<APIResponse?>(model.Id, token);
         if (response is not null && response.IsSuccess)
         {
             TempData["success"] = "Villa deleted successfully!";
