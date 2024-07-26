@@ -20,7 +20,7 @@ public class AuthService : BaseService, IAuthService
         {
             ApiType = StaticDetails.ApiType.POST,
             Data = loginObject,
-            Url = _villaUrl + "/api/usersAuth/login"
+            Url = _villaUrl + "/api/v1/usersAuth/login"
         });
     }
 
@@ -30,7 +30,7 @@ public class AuthService : BaseService, IAuthService
         {
             ApiType = StaticDetails.ApiType.POST,
             Data = registrationObject,
-            Url = _villaUrl + "/api/usersAuth/register"
+            Url = _villaUrl + "/api/v1/usersAuth/register"
         });
     }
 }

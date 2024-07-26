@@ -17,7 +17,7 @@ public class VillaService(
         return SendAsync<T>(new APIRequest
         {
             ApiType = StaticDetails.ApiType.GET,
-            Url = _url+"/api/villaAPI",
+            Url = _url+"/api/v1/villaAPI",
             Token = token
         });
     }
@@ -27,7 +27,7 @@ public class VillaService(
         return SendAsync<T>(new APIRequest
         {
             ApiType = StaticDetails.ApiType.GET,
-            Url = _url + "/api/villaAPI/" + id,
+            Url = _url + "/api/v1/villaAPI/" + id,
             Token = token
         });
     }
@@ -38,7 +38,7 @@ public class VillaService(
         {
             ApiType = StaticDetails.ApiType.POST,
             Data = createDto,
-            Url = _url+"/api/villaAPI",
+            Url = _url+"/api/v1/villaAPI",
             Token = token
         });
     }
@@ -48,7 +48,7 @@ public class VillaService(
         return SendAsync<T>(new APIRequest
         {
             ApiType = StaticDetails.ApiType.DELETE,
-            Url = _url + "/api/villaAPI/" + id,
+            Url = _url + "/api/v1/villaAPI/" + id,
             Token = token
         });
     }
@@ -59,7 +59,7 @@ public class VillaService(
         {
             ApiType = StaticDetails.ApiType.PUT,
             Data = updateDto,
-            Url = _url+"/api/villaAPI/" + updateDto.Id,
+            Url = _url+"/api/v1/villaAPI/" + updateDto.Id,
             Token = token
         });
     }

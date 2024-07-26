@@ -56,7 +56,8 @@ public class BaseService : IBaseService
             try
             {
                 APIResponse response = JsonConvert.DeserializeObject<APIResponse>(apiResponseContentAsString)!;
-                if (httpResponseMessage.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+                if (response is not null && 
+                    httpResponseMessage.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
                 {
                     response.IsSuccess = false;
                     var outgoingResponseAsString = JsonConvert.SerializeObject(response);
