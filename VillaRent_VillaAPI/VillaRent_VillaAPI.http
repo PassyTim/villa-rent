@@ -1,0 +1,5 @@
+@VillaRent_VillaAPI_HostAddress = http://localhost:5043
+
+Accept: application/json
+
+###
