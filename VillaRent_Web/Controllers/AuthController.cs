@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -34,11 +35,14 @@ public class AuthController : Controller
             LoginResponseDto loginModel =
                 JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(loginApiResponse.Result)!)!;
 
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var jwt = jwtHandler.ReadJwtToken(loginModel.Token);
+            
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
             identity.AddClaims(new Claim?[]
             {
-                new(ClaimTypes.Name, loginModel.User.Username),
-                new(ClaimTypes.Role, loginModel.User.Role)
+                new(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "unique_name")!.Value),
+                new(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role")!.Value)
             });
 
             var principal = new ClaimsPrincipal(identity);
