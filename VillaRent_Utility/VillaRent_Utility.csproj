@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\VillaRent_VillaAPI\VillaRent_VillaAPI.csproj" />
+    </ItemGroup>
+
 </Project>

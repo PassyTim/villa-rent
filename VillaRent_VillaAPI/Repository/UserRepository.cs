@@ -1,10 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using VillaRent_VillaAPI.Data;
+using VillaRent_VillaAPI.JwtProvider.Interfaces;
 using VillaRent_VillaAPI.Models;
 using VillaRent_VillaAPI.Models.DTO;
 using VillaRent_VillaAPI.Repository.IRepository;
@@ -16,11 +13,12 @@ public class UserRepository(
     IMapper mapper,
     IConfiguration configuration,
     UserManager<ApplicationUser> userManager,
-    RoleManager<IdentityRole> roleManager)
+    RoleManager<IdentityRole> roleManager,
+    IJwtProvider jwtProvider)
     : IUserRepository
 {
-    private string _secretKey = configuration.GetValue<string>("ApiSettings:Secret")!;
-    
+    public IConfiguration Configuration { get; } = configuration;
+
     public bool IsUserUnique(string username)
     {
         var user = dbContext.ApplicationUsers.FirstOrDefault(u => u.UserName == username);
@@ -37,27 +35,13 @@ public class UserRepository(
         bool isPasswordValid = await userManager.CheckPasswordAsync(user, loginRequestDto.Password);
         
         if (user is null || !isPasswordValid) return new LoginResponseDto(User:null, Token:"");
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_secretKey);
-
+        
         var roles = await userManager.GetRolesAsync(user);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, roles.FirstOrDefault())
-            }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new (new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        string token = jwtProvider.Generate(user, roles);
 
         LoginResponseDto responseDto = new LoginResponseDto(
             User: mapper.Map<UserDto>(user), 
-            Token: tokenHandler.WriteToken(token)
+            Token: token
             );
 
         return responseDto;

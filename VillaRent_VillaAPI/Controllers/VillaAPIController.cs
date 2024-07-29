@@ -32,12 +32,14 @@ public class VillaApiController(
         try
         {
             logger.LogInformation("GetVillas called.");
-        
+            
+            Pagination pagination = new Pagination { PageNumber = pageNumber, PageSize = pageSize };
+            Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(pagination));
+            
             _response.Result = mapper.Map<List<VillaDto>>(await repository.
                 GetAllAsync(pageSize:pageSize, pageNumber:pageNumber));
             _response.StatusCode = HttpStatusCode.OK;
-            Pagination pagination = new Pagination { PageNumber = pageNumber, PageSize = pageSize };
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(pagination));
+            
             return Ok(_response);
         }
         catch (Exception ex)
@@ -68,23 +70,27 @@ public class VillaApiController(
                 _response.IsSuccess = false;
                 return BadRequest(_response);
             }
-        
+
             var villa = await repository.GetAsync(v => v.Id == id);
             if (villa is not null)
             {
                 _response.Result = mapper.Map<VillaDto>(villa);
                 _response.StatusCode = HttpStatusCode.OK;
-            
+
                 return Ok(_response);
             }
-            
-            return NotFound();
+
+            _response.Errors = ["Villa doesn't exist!"];
+            _response.StatusCode = HttpStatusCode.NotFound;
+            _response.IsSuccess = false;
+            return NotFound(_response);
         }
         catch (Exception ex)
         {
             _response.Errors = [ex.Message];
             _response.IsSuccess = false;
         }
+        
         return _response;
     }
 
@@ -144,6 +150,7 @@ public class VillaApiController(
                 return NotFound();
 
             await repository.RemoveAsync(villa);
+            
             _response.StatusCode = HttpStatusCode.NoContent;
             return Ok(_response);
         }

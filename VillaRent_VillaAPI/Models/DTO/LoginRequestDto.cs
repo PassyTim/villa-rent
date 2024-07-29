@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace VillaRent_VillaAPI.Models.DTO;
 
 public record LoginRequestDto(
-    string Username,
-    string Password);
+    [Required] string Username,
+    [Required] string Password);
