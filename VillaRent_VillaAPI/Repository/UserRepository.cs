@@ -11,14 +11,11 @@ namespace VillaRent_VillaAPI.Repository;
 public class UserRepository(
     ApplicationDbContext dbContext,
     IMapper mapper,
-    IConfiguration configuration,
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     IJwtProvider jwtProvider)
     : IUserRepository
 {
-    public IConfiguration Configuration { get; } = configuration;
-
     public bool IsUserUnique(string username)
     {
         var user = dbContext.ApplicationUsers.FirstOrDefault(u => u.UserName == username);
@@ -67,6 +64,7 @@ public class UserRepository(
                     await roleManager.CreateAsync(new IdentityRole("admin"));
                     await roleManager.CreateAsync(new IdentityRole("customer"));
                 }
+                
                 await userManager.AddToRoleAsync(userToCreate, "admin");
                 var userToReturn = dbContext.ApplicationUsers
                     .FirstOrDefault(u => u.UserName == registrationRequestDto.Username);

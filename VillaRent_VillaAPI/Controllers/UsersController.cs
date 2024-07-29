@@ -19,7 +19,7 @@ public class UsersController(
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
     {
         var loginResponse = await repository.LoginUser(loginRequestDto);
-        // =ре
+        // реализовать передачу токена в хедерах
         HttpContext.Response.Headers.Authorization = loginResponse.Token;
         
         if (loginResponse.User is null || string.IsNullOrEmpty(loginResponse.Token))
