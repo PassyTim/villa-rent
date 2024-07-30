@@ -10,6 +10,7 @@ namespace VillaRent.API.Controllers;
 [Route("api/v{version:apiVersion}/usersAuth")]
 [ApiController]
 [ApiVersionNeutral]
+[ApiVersion("1.0")]
 public class UsersController(
     IUserService userService) : Controller
 {
@@ -20,6 +21,7 @@ public class UsersController(
     {
         var loginResponse = await userService.LoginUser(loginRequest);
         // реализовать передачу токена в хедерах
+        
         HttpContext.Response.Headers.Authorization = loginResponse.Token;
         
         if (loginResponse.User is null || string.IsNullOrEmpty(loginResponse.Token))

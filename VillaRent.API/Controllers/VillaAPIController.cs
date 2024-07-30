@@ -108,12 +108,19 @@ public class VillaApiController(
             if (await repository.GetAsync(v => 
                     v.Name.ToLower() == createDto!.Name.ToLower()) is not null)
             {
-                ModelState.AddModelError("", "Villa with this name already exists");
-                return BadRequest(ModelState);
+                _response.IsSuccess = false;
+                _response.Errors = ["Villa with this name already exists"];
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
             }
 
             if (createDto is null)
-                return BadRequest();  
+            {
+                _response.IsSuccess = false;
+                _response.Errors = ["Data is null"];
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);  
+            }
             
 
             var model = mapper.Map<Villa>(createDto);
@@ -145,12 +152,22 @@ public class VillaApiController(
     {
         try
         {
-            if(id == 0)
-                return BadRequest();
+            if (id == 0)
+            {
+                _response.IsSuccess = false;
+                _response.Errors = ["Id cannot be null"];
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);  
+            }
 
             var villa = await repository.GetAsync(v => v.Id == id);
             if (villa is null)
-                return NotFound();
+            {
+                _response.IsSuccess = false;
+                _response.Errors = ["Villa to delete not found"];
+                _response.StatusCode = HttpStatusCode.NotFound;
+                return NotFound(_response);
+            }
 
             await repository.RemoveAsync(villa);
             
@@ -178,11 +195,21 @@ public class VillaApiController(
         try
         {
             if (updateDto is null || id != updateDto.Id)
-                return BadRequest();
+            {
+                _response.IsSuccess = false;
+                _response.Errors = ["Incorrect update data"];
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
+            }
 
             var villaToUpdate = await repository.GetAsync(v => v.Id == id, false);
             if (villaToUpdate is null)
-                return NotFound();
+            {
+                _response.IsSuccess = false;
+                _response.Errors = ["Villa to update not found"];
+                _response.StatusCode = HttpStatusCode.NotFound;
+                return NotFound(_response);
+            }
         
             var model = mapper.Map<Villa>(updateDto);
             await repository.UpdateAsync(model);
@@ -209,11 +236,21 @@ public class VillaApiController(
     public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDto>? patchDto)
     {
         if (patchDto is null || id == 0)
-            return BadRequest();
+        {
+            _response.IsSuccess = false;
+            _response.Errors = ["Incorrect update data"];
+            _response.StatusCode = HttpStatusCode.BadRequest;
+            return BadRequest(_response);
+        }
 
         var villaToUpdate = await repository.GetAsync(v => v.Id == id, false);
         if (villaToUpdate is null)
-            return NotFound();
+        {
+            _response.IsSuccess = false;
+            _response.Errors = ["Villa to update not found"];
+            _response.StatusCode = HttpStatusCode.NotFound;
+            return NotFound(_response);
+        }
         
         var villaDto = mapper.Map<VillaUpdateDto>(villaToUpdate);
         
