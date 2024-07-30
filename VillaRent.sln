@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent_VillaAPI", "VillaRent_VillaAPI\VillaRent_VillaAPI.csproj", "{63618E05-7B1E-4091-B31D-590C394C5E8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent.API", "VillaRent.API\VillaRent.API.csproj", "{63618E05-7B1E-4091-B31D-590C394C5E8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent_Web", "VillaRent_Web\VillaRent_Web.csproj", "{C58E10C9-FF40-464B-8CA8-95332670F897}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent.Web", "VillaRent.Web\VillaRent.Web.csproj", "{C58E10C9-FF40-464B-8CA8-95332670F897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent_Utility", "VillaRent_Utility\VillaRent_Utility.csproj", "{17393E8E-9F54-4976-926D-97551801B789}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent.WebUtilities", "VillaRent.WebUtilities\VillaRent.WebUtilities.csproj", "{17393E8E-9F54-4976-926D-97551801B789}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VillaRent.Domain", "VillaRent.Domain\VillaRent.Domain.csproj", "{CC80799E-43DA-44C0-9304-B1568FAC4C54}"
 EndProject
