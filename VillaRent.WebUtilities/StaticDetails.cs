@@ -12,4 +12,5 @@ public static class StaticDetails
     }
 
     public static readonly string SessionToken = "JWTToken";
+    public static readonly string SessionRole = "SessionRole";
 }

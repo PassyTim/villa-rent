@@ -2,7 +2,7 @@ using VillaRent.Domain.IRepositories;
 using VillaRent.Domain.Models;
 using VillaRent.Persistence.Data;
 
-namespace VillaRent.Persistence.Repos;
+namespace VillaRent.Persistence.Repositories;
 
 public class VillaRepository(ApplicationDbContext dbContext) : RepositoryBase<Villa>(dbContext), IVillaRepository
 {

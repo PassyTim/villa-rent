@@ -48,6 +48,7 @@ public class AuthController : Controller
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             
+            HttpContext.Session.SetString(StaticDetails.SessionRole, jwt.Claims.FirstOrDefault(u => u.Type == "role")!.Value);
             HttpContext.Session.SetString(StaticDetails.SessionToken, loginModel.Token);
             
             return RedirectToAction("Index", "Home");

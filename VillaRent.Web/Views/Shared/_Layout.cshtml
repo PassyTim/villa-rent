@@ -31,9 +31,12 @@
                     <li class="nav-item">
                         <a class="nav-link text-light" asp-area="" asp-controller="Villa" asp-action="IndexVilla">Villa</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Numbers</a>
-                    </li>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(StaticDetails.SessionRole) == "admin")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumber">Villa Numbers</a>
+                        </li>
+                    }
                     @if (HttpContextAccessor.HttpContext.Session.GetString(StaticDetails.SessionToken).IsNullOrEmpty())
                     {
                         <li class="nav-item">

@@ -10,7 +10,7 @@ using VillaRent.Domain.Models;
 using VillaRent.Infrastructure.JwtProvider;
 using VillaRent.Infrastructure.JwtProvider.Interfaces;
 using VillaRent.Persistence.Data;
-using VillaRent.Persistence.Repos;
+using VillaRent.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;

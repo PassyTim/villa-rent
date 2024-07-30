@@ -24,10 +24,10 @@ public class UserService(
     public async Task<LoginResponse> LoginUser(LoginUserRequest loginRequest)
     {
         var user = repository.GetByUserName(loginRequest.Username).Result;
-
-        bool isPasswordValid = await userManager.CheckPasswordAsync(user, loginRequest.Password);
+        if(user is null) return new LoginResponse(User:null, Token:"");
         
-        if (user is null || !isPasswordValid) return new LoginResponse(User:null, Token:"");
+        bool isPasswordValid = await userManager.CheckPasswordAsync(user, loginRequest.Password);
+        if (!isPasswordValid) return new LoginResponse(User:null, Token:"");
         
         var roles = await userManager.GetRolesAsync(user);
         string token = jwtProvider.Generate(user, roles);
@@ -68,10 +68,7 @@ public class UserService(
                 await userManager.AddToRoleAsync(userToCreate, "customer");
 
                 var userToReturn = repository.GetByUserName(registrationRequest.Username).Result;
-                if (userToReturn is null) return false;
-
-                return true;
-                // добавить возврат ошибок на фронтенд
+                return userToReturn is not null;
             }
         }
         catch (Exception ex)

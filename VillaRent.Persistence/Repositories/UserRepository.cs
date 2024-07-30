@@ -4,20 +4,13 @@ using VillaRent.Domain.IRepositories;
 using VillaRent.Domain.Models;
 using VillaRent.Persistence.Data;
 
-namespace VillaRent.Persistence.Repos;
+namespace VillaRent.Persistence.Repositories;
 
 public class UserRepository(
-    ApplicationDbContext dbContext,
-    UserManager<ApplicationUser> userManager)
+    ApplicationDbContext dbContext)
     : IUserRepository
 {
     
-    // public async Task Add(ApplicationUser user, string password)
-    // {
-    //     await userManager.CreateAsync(user, password);
-    //     await userManager.AddToRoleAsync(user, "admin");
-    // }
-
     public async Task<ApplicationUser?> GetByUserName(string userName)
     {
         var user = await dbContext.ApplicationUsers.FirstOrDefaultAsync

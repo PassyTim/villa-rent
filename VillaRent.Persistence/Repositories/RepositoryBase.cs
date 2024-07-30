@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using VillaRent.Domain.IRepositories;
 using VillaRent.Persistence.Data;
 
-namespace VillaRent.Persistence.Repos;
+namespace VillaRent.Persistence.Repositories;
 
 public class RepositoryBase<T>(ApplicationDbContext dbContext) : IRepository<T>
     where T : class
