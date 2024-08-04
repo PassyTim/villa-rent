@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
 using VillaRent.API.Configurations;
 using VillaRent.API.Extensions;
@@ -31,9 +32,21 @@ services.AddIdentity<ApplicationUser, IdentityRole>()
 
 services.AddDbContext<ApplicationDbContext>();
 
+services.AddScoped<VillaRepository>();
+services.AddScoped<IVillaRepository>(provider =>
+{
+    var villaRepository = provider.GetService<VillaRepository>();
+    return new CachedVillaRepository(villaRepository, provider.GetService<IDistributedCache>()!);
+});
+
+services.AddStackExchangeRedisCache(redisOptions =>
+{
+    string connection = configuration.GetConnectionString("Redis")!;
+    redisOptions.Configuration = connection;
+});
+
 services.AddScoped<IUserService, UserService>();
 services.AddScoped<IUserRepository, UserRepository>();
-services.AddScoped<IVillaRepository, VillaRepository>();
 services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IJwtProvider, JwtProvider>();
@@ -42,13 +55,7 @@ services.AddConfiguredApiVersioning();
 
 services.AddAutoMapper(typeof(MappingConfig));
 
-services.AddControllers(options =>
-{
-    options.CacheProfiles.Add("Default60", new CacheProfile
-    {
-        Duration = 60,
-    });
-}).AddNewtonsoftJson();
+services.AddControllers().AddNewtonsoftJson();
 
 services.AddEndpointsApiExplorer();
 services.AddSwagger();

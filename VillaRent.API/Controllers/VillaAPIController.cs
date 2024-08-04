@@ -24,7 +24,6 @@ public class VillaApiController(
     private readonly APIResponse _response = new();
     
     [HttpGet]
-    [ResponseCache(CacheProfileName = "Default60")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -53,7 +52,6 @@ public class VillaApiController(
     }
     
     [Authorize]
-    [ResponseCache(CacheProfileName = "Default60")]
     [HttpGet("{id:int}", Name = "GetVilla")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

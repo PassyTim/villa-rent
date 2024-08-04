@@ -7,10 +7,9 @@ using VillaRent.Application.ServiceModels;
 
 namespace VillaRent.API.Controllers;
 
-[Route("api/v{version:apiVersion}/usersAuth")]
+[Route("api/usersAuth")]
 [ApiController]
 [ApiVersionNeutral]
-[ApiVersion("1.0")]
 public class UsersController(
     IUserService userService) : Controller
 {
@@ -20,7 +19,6 @@ public class UsersController(
     public async Task<IActionResult> Login([FromBody] LoginUserRequest loginRequest)
     {
         var loginResponse = await userService.LoginUser(loginRequest);
-        // реализовать передачу токена в хедерах
         
         HttpContext.Response.Headers.Authorization = loginResponse.Token;
         
