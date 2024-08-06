@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
 using VillaRent.API.Configurations;
@@ -15,6 +14,7 @@ using VillaRent.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+var environment = builder.Environment;
 ConfigurationManager configuration = builder.Configuration;
 
 Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
@@ -22,6 +22,11 @@ Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
 
 services.AddResponseCaching();
 
@@ -36,7 +41,18 @@ services.AddScoped<VillaRepository>();
 services.AddScoped<IVillaRepository>(provider =>
 {
     var villaRepository = provider.GetService<VillaRepository>();
-    return new CachedVillaRepository(villaRepository, provider.GetService<IDistributedCache>()!);
+    return new CachedVillaRepository(villaRepository, 
+        provider.GetService<IDistributedCache>()!,
+        provider.GetService<ApplicationDbContext>()!);
+});
+
+services.AddScoped<VillaNumberRepository>();
+services.AddScoped<IVillaNumberRepository>(provider =>
+{
+    var villaNumberRepository = provider.GetService<VillaNumberRepository>();
+    return new CachedVillaNumberRepository(villaNumberRepository, 
+        provider.GetService<IDistributedCache>()!,
+        provider.GetService<ApplicationDbContext>()!);
 });
 
 services.AddStackExchangeRedisCache(redisOptions =>
@@ -46,8 +62,6 @@ services.AddStackExchangeRedisCache(redisOptions =>
 });
 
 services.AddScoped<IUserService, UserService>();
-services.AddScoped<IUserRepository, UserRepository>();
-services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IJwtProvider, JwtProvider>();
 
@@ -72,6 +86,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "VillaRentV1");
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "VillaRentV2");
     });
+    //app.ApplyMigrations();
 }
 
 app.UseAuthentication();

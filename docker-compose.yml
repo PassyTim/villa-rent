@@ -1,0 +1,28 @@
+﻿services:
+  villarent.api:
+    image: villarent.api
+    container_name : villarent.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    build:
+      context: .
+      dockerfile: VillaRent.API/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      
+  villarent.database:
+    image: mcr.microsoft.com/mssql/server:latest
+    container_name: villarent.database
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Passw0rd
+    ports:
+      - "1433:1433"
+  
+  villarent.cache:
+    image: redis:latest
+    container_name: villarent.cache
+    restart: always
+    ports:
+      - '6379:6379'

@@ -1,8 +1,10 @@
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using VillaRent.Domain.IRepositories;
 using VillaRent.Domain.Models;
+using VillaRent.Persistence.Data;
 
 namespace VillaRent.Persistence.Repositories;
 
@@ -10,9 +12,11 @@ public class CachedVillaRepository : IVillaRepository
 {
     private readonly IVillaRepository _decorated;
     private readonly IDistributedCache _distributedCache;
+    private readonly ApplicationDbContext _dbContext;
 
-    public CachedVillaRepository(IVillaRepository decorated, IDistributedCache distributedCache)
+    public CachedVillaRepository(IVillaRepository decorated, IDistributedCache distributedCache, ApplicationDbContext dbContext)
     {
+        _dbContext = dbContext;
         _distributedCache = distributedCache;
         _decorated = decorated;
     }
@@ -25,13 +29,15 @@ public class CachedVillaRepository : IVillaRepository
         List<Villa> villas;
         if (string.IsNullOrEmpty(cachedVillas))
         {
-            villas = _decorated.GetAllAsync(filter, includeProperties, pageSize, pageNumber).Result;
+            villas = await _decorated.GetAllAsync(filter, includeProperties, pageSize, pageNumber);
             if (villas is null)
             {
                 return villas;
             }
 
-            await _distributedCache.SetStringAsync(key, JsonConvert.SerializeObject(villas), new DistributedCacheEntryOptions
+            await _distributedCache.SetStringAsync(key, 
+                JsonConvert.SerializeObject(villas), 
+                new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
             });
@@ -52,20 +58,23 @@ public class CachedVillaRepository : IVillaRepository
         Villa? villa; 
         if (string.IsNullOrEmpty(cachedVilla))
         {
-            villa = _decorated.GetAsync(filter, tracked, includeProperties).Result;
+            villa = await _decorated.GetAsync(filter, tracked, includeProperties);
             if (villa is null)
             {
                 return villa;
             }
 
-            await _distributedCache.SetStringAsync(key, JsonConvert.SerializeObject(villa), new DistributedCacheEntryOptions
+            await _distributedCache.SetStringAsync(key, 
+                JsonConvert.SerializeObject(villa), 
+                new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3)
             });
             return villa;
         }
         
         villa = JsonConvert.DeserializeObject<Villa>(cachedVilla)!;
+        _dbContext.Set<Villa>().Attach(villa);
         return villa;
     }
 
