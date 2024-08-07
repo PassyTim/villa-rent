@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
 using VillaRent.API.Configurations;
+using VillaRent.API.CustomMiddleware;
 using VillaRent.API.Extensions;
 using VillaRent.Application;
 using VillaRent.Application.IServices;
@@ -78,7 +79,7 @@ services.AddApiAuthentication(configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
@@ -86,7 +87,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "VillaRentV1");
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "VillaRentV2");
     });
-    //app.ApplyMigrations();
+    app.ApplyMigrations();
 }
 
 app.UseAuthentication();

@@ -10,6 +10,23 @@
     ports:
       - "8080:8080"
       - "8081:8081"
+    depends_on:
+      villarent.database:
+        condition: service_healthy
+      villarent.cache:
+        condition: service_started
+          
+#  villarent.web:
+#    image: villarent.web
+#    container_name: villarent.web
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Production
+#    build:
+#      context: .
+#      dockerfile: VillaRent.Web/Dockerfile
+#    ports:
+#      - "8082:8082"
+#      - "8083:8083"
       
   villarent.database:
     image: mcr.microsoft.com/mssql/server:latest
@@ -19,6 +36,9 @@
       - SA_PASSWORD=Passw0rd
     ports:
       - "1433:1433"
+    healthcheck:
+      test: "exit 0"
+
   
   villarent.cache:
     image: redis:latest
