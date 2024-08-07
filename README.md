@@ -212,7 +212,7 @@ Make sure you have [Docker](https://docs.docker.com/get-docker/) и [Docker Comp
 Application Docker image can be downloaded as follows:
 
 ```bash
-docker push passyexe/villarent.api:v1
+docker push passyexe/villarent.api:v1.1
 ```
 
 Application docker-compose.yml can be found in the repository
