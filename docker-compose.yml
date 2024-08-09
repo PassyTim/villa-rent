@@ -1,12 +1,9 @@
 ﻿services:
   villarent.api:
-    image: villarent.api
+    image: passyexe/villarent.api:v1.2
     container_name : villarent.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-    build:
-      context: .
-      dockerfile: VillaRent.API/Dockerfile
     ports:
       - "8080:8080"
       - "8081:8081"
@@ -15,18 +12,6 @@
         condition: service_healthy
       villarent.cache:
         condition: service_started
-          
-#  villarent.web:
-#    image: villarent.web
-#    container_name: villarent.web
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Production
-#    build:
-#      context: .
-#      dockerfile: VillaRent.Web/Dockerfile
-#    ports:
-#      - "8082:8082"
-#      - "8083:8083"
       
   villarent.database:
     image: mcr.microsoft.com/mssql/server:latest
