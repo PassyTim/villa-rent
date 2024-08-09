@@ -1,7 +1,5 @@
-/appsettings.json
 /appsettings.Development.json
 /bin/Debug/net8.0/appsettings.Development.json
-/bin/Debug/net8.0/appsettings.json\
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
