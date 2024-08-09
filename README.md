@@ -1,3 +1,4 @@
+
 # VillaRent
 
 Pet project consisting of API and frontend for villa booking service.
@@ -174,8 +175,33 @@ Request body:
 
 # Installation
 
-    
-## Run Frontend
+    ## Redis and MSSQL Server Docker Run
+
+Make sure you have [Docker](https://docs.docker.com/get-docker/)
+
+
+Application docker-compose.yml can be found in the repository
+
+Switch to the folder containing the docker-compose file:
+
+```bash
+cd /path/to/compose-file
+```
+
+To start containers, execute:
+
+```bash
+docker-compose up -d
+```
+
+To stop and delete containers, use the following command:
+
+```bash
+docker-compose down
+```
+## Run 
+
+Do this after starting Redis and MSSQL Server
 
 Clone the project
 
@@ -209,31 +235,24 @@ Run application
 ```bash
   dotnet run
 ```
-Then run API 
+Then run API:
 
-
-
-## Api Docker Run
-
-Make sure you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
-
-
-Application docker-compose.yml can be found in the repository
-
-Switch to the folder containing the docker-compose file:
+Go to the API project directory
 
 ```bash
-cd /path/to/your/compose-file
+  cd villa-rent/VillaRent.API
 ```
-
-To start containers, execute:
+Install dependencies
 
 ```bash
-docker-compose up -d
+  dotnet restore
 ```
 
-To stop and delete containers, use the following command:
 
+Run application
 ```bash
-docker-compose down
+  dotnet run
 ```
+
+
+
