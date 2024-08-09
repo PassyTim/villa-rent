@@ -1,4 +1,3 @@
-
 # VillaRent
 
 Pet project consisting of API and frontend for villa booking service.
@@ -190,6 +189,15 @@ Go to the project directory
   cd villa-rent/VillaRent.Web
 ```
 
+Check for .NET 8 SDK
+
+```bash
+  dotnet --version
+```
+
+If you dont have version 8.0 , install it here:
+https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+
 Install dependencies
 
 ```bash
@@ -207,13 +215,8 @@ Then run API
 
 ## Api Docker Run
 
-Make sure you have [Docker](https://docs.docker.com/get-docker/) и [Docker Compose](https://docs.docker.com/compose/install/).
+Make sure you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
 
-Application Docker image can be downloaded as follows:
-
-```bash
-docker push passyexe/villarent.api:v1.1
-```
 
 Application docker-compose.yml can be found in the repository
 
